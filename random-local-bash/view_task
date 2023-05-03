@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+cat ~/current_task.txt
