@@ -69,7 +69,7 @@ messages=(
 while true; do
   clear
   random_message_index=$((RANDOM % ${#messages[@]}))
-  echo "${messages[$random_message_index]}"
+  botsay "${messages[$random_message_index]}"
   
   if [ "$interval_option" == "fast" ]; then
     random_interval=$((RANDOM % 6 + 1)) # Random number between 1 and 6
