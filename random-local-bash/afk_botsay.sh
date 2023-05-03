@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Check if the command line option is provided and valid
-if [ "$1" == "fast" ] || [ "$1" == "slow" ]; then
+if [ "$1" == "fast" ] || [ "$1" == "slow" ] || [ "$1" == "ultra" ]; then
   interval_option="$1"
 else
   interval_option="slow"
@@ -73,6 +73,8 @@ while true; do
   
   if [ "$interval_option" == "fast" ]; then
     random_interval=$((RANDOM % 6 + 1)) # Random number between 1 and 6
+  elif [ "$interval_option" == "ultra" ]; then
+    random_interval=0.1
   else
     random_interval=$((RANDOM % 11 + 5)) # Random number between 5 and 15
   fi
