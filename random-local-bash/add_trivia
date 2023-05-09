@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [[ $# -ne 1 ]]; then
+  echo "Usage: $0 'question|answer'"
+  exit 1
+fi
+
+# Find the full path of add_to_json.sh, or use the current directory if not found
+add_to_json_path=$(which add_to_json.sh 2>/dev/null || echo "./add_to_json.sh")
+
+# Check if the script is executable
+if [[ ! -x $add_to_json_path ]]; then
+  echo "Error: add_to_json.sh not found or not executable. Make sure it is in your PATH or the current directory."
+  exit 1
+fi
+
+$add_to_json_path trivia "${1}"

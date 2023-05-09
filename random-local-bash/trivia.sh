@@ -1,19 +1,24 @@
 #!/usr/bin/env bash
 
-questions=("What does 'ALU' stand for?"
-           "What is the standard port number for the HTTPS protocol?"
-           "Which programming language was developed by Yukihiro Matsumoto?"
-           "What does 'SSD' stand for?"
-           "What is the default file extension for a Java script?")
+# Read trivia questions and answers from trivia.json
+json_file="trivia.json"
+if [ ! -f "$json_file" ]; then
+  echo "Error: $json_file not found."
+  exit 1
+fi
 
-answers=("Arithmetic Logic Unit"
-         "443"
-         "Ruby"
-         "Solid State Drive"
-         ".java")
+questions=()
+answers=()
+
+while IFS= read -r line; do
+  questions+=("$line")
+done < <(jq -r '.trivia[].question' "$json_file")
+
+while IFS= read -r line; do
+  answers+=("$line")
+done < <(jq -r '.trivia[].answer' "$json_file")
 
 clear
-
 
 for i in "${!questions[@]}"; do
   echo -e "\033[1;33mQuestion $(($i + 1)):\033[0m ${questions[$i]}"

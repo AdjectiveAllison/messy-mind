@@ -1,0 +1,32 @@
+{
+  "trivia": [
+    {
+      "question": "What does 'ALU' stand for?",
+      "answer": "Arithmetic Logic Unit"
+    },
+    {
+      "question": "What is the standard port number for the HTTPS protocol?",
+      "answer": "443"
+    },
+    {
+      "question": "Which programming language was developed by Yukihiro Matsumoto?",
+      "answer": "Ruby"
+    },
+    {
+      "question": "What does 'SSD' stand for?",
+      "answer": "Solid State Drive"
+    },
+    {
+      "question": "What is the default file extension for a Java script?",
+      "answer": ".java"
+    },
+    {
+      "question": "What is technology?",
+      "answer": "This is a silly question"
+    },
+    {
+      "question": "How do you know if something works?",
+      "answer": "push it to production!"
+    }
+  ]
+}
