@@ -1,0 +1,24 @@
+https://github.com/googleapis/googleapis/blob/master/google/cloud/speech/v1/cloud_speech.proto#L117
+Have the vosk speech recognition detect what language the user uses so they don't need to set a specific one.
+
+
+https://github.com/alphacep/vosk-server/tree/master/grpc has exactly what we need to move forward.
+
+file reference:
+OBS-captions-plugin/lib/caption_stream/speech_apis/grpc_speech_api/CaptionStream.cpp
+
+To adapt your server Golang code to work with streaming using Vosk, you can follow these next steps:
+
+Set up a streaming server: Create a gRPC or WebSockets server to handle incoming audio streams from clients. This server should be able to accept multiple concurrent connections from different clients, allowing them to send audio data in real-time.
+
+Process audio in chunks: Modify your transcription logic to handle audio data in chunks as they arrive. Instead of reading the entire audio file, you should adapt your code to process small chunks of audio data received from the client. Use Vosk's recognizer.AcceptWaveform() method to process these chunks.
+
+Send interim results to clients: To emulate the Google Speech API's interim results, you can send partial transcriptions to the client as they become available. You can achieve this using recognizer.PartialResult() after processing each chunk of audio data. Clients can use these partial results to display real-time transcriptions.
+
+Handle end-of-stream and close connections: Implement logic to handle the end of the audio stream. When a client signals that it has finished sending audio data or when the connection is closed, you should call recognizer.FinalResult() to get the final transcription result and send it back to the client.
+
+Manage multiple concurrent transcriptions: Since you may have multiple clients connected and sending audio data, you should manage concurrent transcriptions efficiently. You can use goroutines to process each client's audio stream separately and use sync.WaitGroup and buffered channels (as you have done in your current code) to control the number of concurrent tasks.
+
+Language detection (optional): If you want to support multiple languages, you can use Vosk's speaker recognizer to detect the language being spoken in the audio stream. Based on the detected language, you can load the appropriate Vosk model and perform the transcription.
+
+By following these steps, you can create a streaming server that uses Vosk for speech recognition, emulating the Google Speech API's functionality. Make sure to test your implementation thoroughly, ensuring that it works well with different audio formats, languages, and network conditions.
