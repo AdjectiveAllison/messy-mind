@@ -26,6 +26,30 @@ make
 
 This will generate a WebAssembly module in the build directory.
 
+## Running
+
+1. Execute wasmer
+```bash
+wasmer build/thread_test.wasm 
+```
+
+2. Get output with multiple threads from web asembly!!!
+
+```
+-----Testing with 4 threads-----
+Creating thread 0
+Creating thread 1
+Creating thread 2
+Creating thread 3
+Thread #3, counter value: 0
+Thread #1, counter value: 0
+Thread #0, counter value: 0
+Thread #2, counter value: 0
+Thread #1, counter value: 1
+Thread #3, counter value: 1
+Thread #2, counter value: 1
+Thread #0, counter value: 1
+```
 ## Future
 
 TBD
