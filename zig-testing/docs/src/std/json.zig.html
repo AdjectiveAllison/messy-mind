@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>json.zig - source view</title>
+    <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAPNJREFUeNpi/P//PwMlgOXHUjly9E0G4hwgZmQiQZMqEK8H4v9QzUEgQSaoADK+zhH9iAGL+C0gDoAaNg9mGLoLfgA1awK9hS9gzgJxA9RQBmQDrgMxJzRMGKE4HYj/Ial5A8QmQLwCJoBsgBYW2+TR1ChDaWt4LOBxKsi/VUh8XiD+gq4IVyzwQAMJBoKwacZlAB8Qf0bi96IZhtOAe1D6LpqaEiz6rmEzQAeIzwGxCJpieFqApo/vQKyJboAaEBsAsSEupwI1MwKjGBTVHOhegMX5UajYRqiBjMgYmj400cVh0XgTiKdC0zhJgJHS7AwQYABm9EAdCKrEfAAAAABJRU5ErkJggg=="/>
+    <style>
+      body{
+        font-family: system-ui, -apple-system, Roboto, "Segoe UI", sans-serif;
+        margin: 0;
+        line-height: 1.5;
+      }
+
+      pre > code {
+        display: block;
+        overflow: auto;
+        line-height: normal;
+        margin: 0em;
+      }
+      .tok-kw {
+          color: #333;
+          font-weight: bold;
+      }
+      .tok-str {
+          color: #d14;
+      }
+      .tok-builtin {
+          color: #005C7A;
+      }
+      .tok-comment {
+          color: #545454;
+          font-style: italic;
+      }
+      .tok-fn {
+          color: #900;
+          font-weight: bold;
+      }
+      .tok-null {
+          color: #005C5C;
+      }
+      .tok-number {
+          color: #005C5C;
+      }
+      .tok-type {
+          color: #458;
+          font-weight: bold;
+      }
+      pre {
+        counter-reset: line;
+      }
+      pre .line:before {
+        counter-increment: line;
+        content: counter(line);
+        display: inline-block;
+        padding-right: 1em;
+        width: 2em;
+        text-align: right;
+        color: #999;
+      }
+      
+      .line {
+        width: 100%;
+        display: inline-block;
+      }
+      .line:target {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+        background: #fafafa;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body{
+            background:#222;
+            color: #ccc;
+        }
+        pre > code {
+            color: #ccc;
+            background: #222;
+            border: unset;
+        }
+        .line:target {
+            border-top: 1px solid #444;
+            border-bottom: 1px solid #444;
+            background: #333;
+        }
+        .tok-kw {
+            color: #eee;
+        }
+        .tok-str {
+            color: #2e5;
+        }
+        .tok-builtin {
+            color: #ff894c;
+        }
+        .tok-comment {
+            color: #aa7;
+        }
+        .tok-fn {
+            color: #B1A0F8;
+        }
+        .tok-null {
+            color: #ff8080;
+        }
+        .tok-number {
+            color: #ff8080;
+        }
+        .tok-type {
+            color: #68f;
+        }
+      }
+    </style>
+</head>
+<body>
+<pre><code><span class="line" id="L1"><span class="tok-comment">//! JSON parsing and stringification conforming to RFC 8259. https://datatracker.ietf.org/doc/html/rfc8259</span></span>
+<span class="line" id="L2"><span class="tok-comment">//!</span></span>
+<span class="line" id="L3"><span class="tok-comment">//! The low-level `Scanner` API reads from an input slice or successive slices of inputs,</span></span>
+<span class="line" id="L4"><span class="tok-comment">//! The `Reader` API connects a `std.io.Reader` to a `Scanner`.</span></span>
+<span class="line" id="L5"><span class="tok-comment">//!</span></span>
+<span class="line" id="L6"><span class="tok-comment">//! The high-level `parseFromSlice` and `parseFromTokenSource` deserializes a JSON document into a Zig type.</span></span>
+<span class="line" id="L7"><span class="tok-comment">//! The high-level `Parser` parses any JSON document into a dynamically typed `ValueTree` that has its own memory arena.</span></span>
+<span class="line" id="L8"><span class="tok-comment">//!</span></span>
+<span class="line" id="L9"><span class="tok-comment">//! The low-level `writeStream` emits syntax-conformant JSON tokens to a `std.io.Writer`.</span></span>
+<span class="line" id="L10"><span class="tok-comment">//! The high-level `stringify` serializes a Zig type into JSON.</span></span>
+<span class="line" id="L11"></span>
+<span class="line" id="L12"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> ValueTree = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/dynamic.zig&quot;</span>).ValueTree;</span>
+<span class="line" id="L13"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> ObjectMap = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/dynamic.zig&quot;</span>).ObjectMap;</span>
+<span class="line" id="L14"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> Array = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/dynamic.zig&quot;</span>).Array;</span>
+<span class="line" id="L15"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> Value = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/dynamic.zig&quot;</span>).Value;</span>
+<span class="line" id="L16"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> Parser = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/dynamic.zig&quot;</span>).Parser;</span>
+<span class="line" id="L17"></span>
+<span class="line" id="L18"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> validate = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).validate;</span>
+<span class="line" id="L19"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> Error = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).Error;</span>
+<span class="line" id="L20"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> reader = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).reader;</span>
+<span class="line" id="L21"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> default_buffer_size = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).default_buffer_size;</span>
+<span class="line" id="L22"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> Token = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).Token;</span>
+<span class="line" id="L23"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> TokenType = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).TokenType;</span>
+<span class="line" id="L24"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> Diagnostics = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).Diagnostics;</span>
+<span class="line" id="L25"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> AllocWhen = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).AllocWhen;</span>
+<span class="line" id="L26"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> default_max_value_len = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).default_max_value_len;</span>
+<span class="line" id="L27"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> Reader = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).Reader;</span>
+<span class="line" id="L28"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> Scanner = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).Scanner;</span>
+<span class="line" id="L29"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> isNumberFormattedLikeAnInteger = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>).isNumberFormattedLikeAnInteger;</span>
+<span class="line" id="L30"></span>
+<span class="line" id="L31"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> ParseOptions = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/static.zig&quot;</span>).ParseOptions;</span>
+<span class="line" id="L32"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> parseFromSlice = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/static.zig&quot;</span>).parseFromSlice;</span>
+<span class="line" id="L33"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> parseFromTokenSource = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/static.zig&quot;</span>).parseFromTokenSource;</span>
+<span class="line" id="L34"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> ParseError = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/static.zig&quot;</span>).ParseError;</span>
+<span class="line" id="L35"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> parseFree = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/static.zig&quot;</span>).parseFree;</span>
+<span class="line" id="L36"></span>
+<span class="line" id="L37"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> StringifyOptions = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/stringify.zig&quot;</span>).StringifyOptions;</span>
+<span class="line" id="L38"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> encodeJsonString = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/stringify.zig&quot;</span>).encodeJsonString;</span>
+<span class="line" id="L39"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> encodeJsonStringChars = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/stringify.zig&quot;</span>).encodeJsonStringChars;</span>
+<span class="line" id="L40"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> stringify = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/stringify.zig&quot;</span>).stringify;</span>
+<span class="line" id="L41"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> stringifyAlloc = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/stringify.zig&quot;</span>).stringifyAlloc;</span>
+<span class="line" id="L42"></span>
+<span class="line" id="L43"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> WriteStream = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/write_stream.zig&quot;</span>).WriteStream;</span>
+<span class="line" id="L44"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> writeStream = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/write_stream.zig&quot;</span>).writeStream;</span>
+<span class="line" id="L45"></span>
+<span class="line" id="L46"><span class="tok-comment">// Deprecations</span>
+</span>
+<span class="line" id="L47"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> parse = <span class="tok-builtin">@compileError</span>(<span class="tok-str">&quot;Deprecated; use parseFromSlice() or parseFromTokenSource() instead.&quot;</span>);</span>
+<span class="line" id="L48"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> StreamingParser = <span class="tok-builtin">@compileError</span>(<span class="tok-str">&quot;Deprecated; use json.Scanner or json.Reader instead.&quot;</span>);</span>
+<span class="line" id="L49"><span class="tok-kw">pub</span> <span class="tok-kw">const</span> TokenStream = <span class="tok-builtin">@compileError</span>(<span class="tok-str">&quot;Deprecated; use json.Scanner or json.Reader instead.&quot;</span>);</span>
+<span class="line" id="L50"></span>
+<span class="line" id="L51"><span class="tok-kw">test</span> {</span>
+<span class="line" id="L52">    _ = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/test.zig&quot;</span>);</span>
+<span class="line" id="L53">    _ = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/scanner.zig&quot;</span>);</span>
+<span class="line" id="L54">    _ = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/write_stream.zig&quot;</span>);</span>
+<span class="line" id="L55">    _ = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/dynamic.zig&quot;</span>);</span>
+<span class="line" id="L56">    _ = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/static.zig&quot;</span>);</span>
+<span class="line" id="L57">    _ = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/stringify.zig&quot;</span>);</span>
+<span class="line" id="L58">    _ = <span class="tok-builtin">@import</span>(<span class="tok-str">&quot;json/JSONTestSuite_test.zig&quot;</span>);</span>
+<span class="line" id="L59">}</span>
+<span class="line" id="L60"></span>
+</code></pre></body>
+</html>
