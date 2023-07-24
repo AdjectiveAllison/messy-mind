@@ -1,4 +1,4 @@
-# Tinygo attempts at vosk transcriptio in-browser
+# Tinygo attempts at vosk transcription in-browser
 
 ## Notes
 * I wanted to do the same thing as vosk transcription in golang above but with tinygo and run it in the browser.
