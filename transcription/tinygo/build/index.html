@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vosk-browser@0.0.5/dist/vosk.js"></script>
+    <meta charset="UTF-8">
+    <script src="wasm_exec.js"></script>
+    <script>
+      console.log('Starting...');
+      const go = new Go();
+      WebAssembly.instantiateStreaming(fetch("app.wasm"), go.importObject).then((result) => {
+        console.log('Got result:', result);
+        go.run(result.instance);
+      }).catch((err) => {
+        console.log('Error:', err);
+      });
+    </script>
+  </head>
+  <body></body>
+</html>

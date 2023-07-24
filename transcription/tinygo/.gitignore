@@ -1,0 +1,14 @@
+#The vosk model directory
+build/vosk*
+# the model archive
+build/model.tar.gz
+# the compiled web assembly
+build/app.wasm
+# example audio file from testing of regular client side go version probably built with ffmpeg
+build/test.wav
+# tinygo version of go authors created wasm executable file.
+build/wasm_exec.js
+# local file version of vosk-browser
+vosk.js
+# tinygo compiler stuff.
+.vscode/settings.json
