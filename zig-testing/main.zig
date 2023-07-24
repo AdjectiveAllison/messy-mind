@@ -1,9 +1,10 @@
 const std = @import("std");
 const Value = enum(u2) { zero, one, two };
 
+/// MyCoolStruct is lame.
 const MyCoolStruct = struct { q: f32, l: [5]u8, d: i32 };
-
-pub fn main() void {
+/// No one knows how to do anything.
+pub fn main() anyerror!void {
     std.debug.print("Hello, {s}!\n", .{"World"});
 
     const blah = [_]u8{ 'a', 'A', 'z', 'Z' };
@@ -86,7 +87,44 @@ pub fn main() void {
 
     // loops as expressions and breaking/continuing to labels is some powerful mumbo jumbo.
 
+    //var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    //const allocator = gpa.allocator();
+
+    //const solidMath = try std.fmt.allocPrint(allocator, "{d} + {d} = {d}", .{ 27, 3, 12 });
+
+    //defer allocator.free(solidMath);
+    //std.debug.print("Look at this solid math:\n{s}\n", .{solidMath});
+
+    // you're kinda bad at handling errors idk what language you came from.
+    // testingFileCreation("blah.txt") catch |err| switch (err) {
+    //     error.AccessDenied => {
+    //         std.log.err("ERROR - You don't have write permissions you silly person: {any}", .{err});
+    //     },
+    //     else => {
+    //         std.log.err("Unknown error writing file: {any}", .{err});
+    //     },
+    // };
 }
+
+// Idk how to handle errors yet so this function never returned propery because of my try on file create.
+// fn testingFileCreation(filePath: []const u8) anyerror {
+//     const file = try std.fs.cwd().createFile(
+//         filePath,
+//         .{ .read = true },
+//     );
+
+//     defer file.close();
+
+//     const writtenContent = "Hello File!";
+//     try file.writeAll(writtenContent);
+
+//     var buffer: [writtenContent.len]u8 = undefined;
+//     try file.seekTo(0);
+//     const bytes_read = try file.readAll(&buffer);
+
+//     std.debug.print("original content:\n {d} len\n{s}", .{ writtenContent.len, writtenContent });
+//     std.debug.print("read content:\n {d} len\n{s}", .{ buffer.len, bytes_read });
+// }
 
 fn deferWeirdness() void {
     var x: f32 = 5;
