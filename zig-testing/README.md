@@ -22,5 +22,6 @@ I used https://github.com/marler8997/zigup to manage my zig version.
 * I don't remember how I generated docs automatically or if they are supposed to be pushed into git.
 * I'm pushing them because I think it's a cool zig feature and I'm cleaning up this repository and my pc in general.
 * Pretty sure Loris Cro(kristoff) is the one who built this feature but I'm not going to research it currently.
+* I removed the docs from git. Maybe the intention is to publish during CI and not commit anything to git. That makes more sense anyway.
 
 
