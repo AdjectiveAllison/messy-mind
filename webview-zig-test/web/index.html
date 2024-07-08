@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>WebView FFI Example</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                padding: 20px;
+            }
+            button {
+                margin: 10px 0;
+            }
+            #output {
+                border: 1px solid #ccc;
+                padding: 10px;
+                margin-top: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>WebView FFI Example</h1>
+        <button onclick="sendMessageToZig()">Send Message to Zig</button>
+        <div id="output"></div>
+
+        <script>
+            function appendToOutput(message) {
+                document.getElementById("output").innerHTML +=
+                    `<p>${message}</p>`;
+            }
+
+            function sendMessageToZig() {
+                appendToOutput("Sending message to Zig...");
+                jsToZig("Hello from JavaScript!")
+                    .then((response) => {
+                        appendToOutput(
+                            `Raw response from Zig: ${JSON.stringify(response)}`,
+                        );
+                        appendToOutput(
+                            `Parsed response from Zig: ${response.message}`,
+                        );
+                    })
+                    .catch((error) => {
+                        appendToOutput(`Error calling Zig function: ${error}`);
+                        logToZig(`Error calling Zig function: ${error}`);
+                    });
+            }
+
+            function receivedFromZig(message) {
+                appendToOutput(`Received from Zig: ${message}`);
+            }
+
+            window.addEventListener("load", () => {
+                appendToOutput("Page loaded. Testing error logging...");
+                logToZig("Test error logging to Zig");
+                appendToOutput("Testing Zig to JS communication...");
+            });
+        </script>
+    </body>
+</html>
